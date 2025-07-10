@@ -12,7 +12,7 @@ class Champ {
         this.etat = "semé";
         this.rendement = rendement;
         this.estMature = false;
-        console.log(`Plantation de ${culture} sur le champ numéro ${this.numero}`);
+        console.log(`[${new Date().toISOString()}]Plantation de ${culture} sur le champ numéro ${this.numero}`);
 
 
         setTimeout(() => {
@@ -32,21 +32,22 @@ class Champ {
         this.etat = "fertilisé";
         this.rendement *= 1.5;
         this.rendement = Math.round(this.rendement);
-        console.log(`Le champ numéro ${this.numero} a été fertilisé`);
+        console.log(`[${new Date().toISOString()}]Le champ numéro ${this.numero} a été fertilisé`);
     } else if (this.estMature) {
-        console.log(`Trop tard ! La culture sur le champ ${this.numero} est déjà mature. Fertilisation impossible.`);
+        console.log(`[${new Date().toISOString()}]Trop tard ! La culture sur le champ ${this.numero} est déjà mature. Fertilisation impossible.`);
     } else {
-        console.log(`Le champ ${this.numero} ne peut pas être fertilisé dans son état actuel : ${this.etat}`);
+        console.log(`[${new Date().toISOString()}]Le champ ${this.numero} ne peut pas être fertilisé dans son état actuel : ${this.etat}`);
     }
 }
     recolterPlant() {
         if (this.etat === "prêt à récolter"){
             const recolte = this.culture;
             const rendement = this.rendement
+            console.log(`[${new Date().toISOString()}]Récolte de ${recolte} sur le champ ${this.numero} avec un rendement de ${rendement}`);
             this.culture = null;
             this.rendement = null;
             this.etat = "récolté"
-            console.log(`Récolte de ${culture} sur le champ ${this.numero} avec un rendement de ${rendement}`);
+            
             return { culture: recolte, rendement: rendement };
         }
     }

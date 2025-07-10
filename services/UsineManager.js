@@ -35,7 +35,7 @@ class UsineManager {
                 return resolve(usine)
             }
 
-            console.log(`Usine ${nom} indisponible, ajout dans la liste d'attente`);
+            console.log(`[${new Date().toISOString()}]Usine ${nom} indisponible, ajout dans la liste d'attente`);
             this.fileAttente.push({nom, resolve})
             
         })

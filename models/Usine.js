@@ -10,7 +10,7 @@ class Usine {
     }
     utiliser(){
         if(this.utilise){
-            console.log(`L'usine ${nom} est déjà utilisée`);
+            console.log(`[${new Date().toISOString()}]L'usine ${nom} est déjà utilisée`);
             return false
         }
         this.utilise = true;
@@ -18,7 +18,7 @@ class Usine {
     }
     liberer() {
         this.utilise = false;
-        console.log(`L'usine ${nom} est libérée`);
+
         
     }
     estDisponible(){
@@ -30,20 +30,19 @@ class Usine {
         const contenu = await stockage.lister();
         const ligne = contenu.find(item => item.type === this.besoin);
         if (!ligne || ligne.quantite < quantite) {
-            console.log(`Pas assez de ${this.besoin} dans le stockage.`);
             return;
         }
 
-        const produitFinal = quantite * this*multiplicateur
+        const produitFinal = quantite * this.multiplicateur;
         const dispo = await stockage.getEspaceDisponible();
         if (dispo < produitFinal) {
-            console.log(`Stockage plein. L'usine ${this.nom} est mise en pause.`);
+            console.log(`[${new Date().toISOString()}]Stockage plein. L'usine ${this.nom} est mise en pause.`);
             return;   
         }
         await stockage.retirer(this.besoin, quantite)
         await new Promise(resolve => setTimeout(resolve, 1000));
         await stockage.ajouter(this.resultat, produitFinal);
-        console.log(`Usine ${this.nom} a transformé ${quantite}L de ${this.besoin} en ${produitFinal}L de ${this.resultat}`);
+        console.log(`[${new Date().toISOString()}]Usine ${this.nom} a transformé ${quantite}L de ${this.besoin} en ${produitFinal}L de ${this.resultat}`);
     }
 }
 

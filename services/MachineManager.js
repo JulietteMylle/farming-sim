@@ -20,6 +20,8 @@ class MachineManager {
         this.ajouterMachines('planteuse à canne', 1, 'planteuse');
         this.ajouterMachines('moissonneuse à canne', 1, 'moissonneuse');
         this.ajouterMachines('moissonneuse à arbre', 1, 'moissonneuse');
+        this.ajouterMachines('semeuse', 1, 'semeuse');
+        this.ajouterMachines('semeuse', 1, 'semeuse');
     }
 
     ajouterMachines(nom, quantité, type) {
@@ -39,7 +41,7 @@ class MachineManager {
             }
 
 
-            console.log(` Machine "${nom}" indisponible. Ajout dans la file d’attente.`);
+            console.log(` [${new Date().toISOString()}]Machine "${nom}" indisponible. Ajout dans la file d’attente.`);
             this.fileAttente.push({ nom, resolve });
         });
     }

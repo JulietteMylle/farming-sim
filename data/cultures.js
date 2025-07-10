@@ -1,19 +1,19 @@
 const cultures = {
     blé : {
         rendement : 1000,
-        machines: ['tracteur', 'semeuse', 'moisonneuse', 'remorque']
+        machines: ['tracteur', 'semeuse', 'moissonneuse', 'remorque']
     },
     maïs : {
         rendement : 3000,
-        machines : ['tracteur', 'semeuse', 'moisonneuse', 'remorque']
+        machines : ['tracteur', 'semeuse', 'moissonneuse', 'remorque']
     },
     canne_à_sucre : {
         rendement : 5000,
-        machines : ['tracteur', 'planteuse à canne', 'moisonneuse à canne', 'remorque']
+        machines : ['tracteur', 'planteuse à canne', 'moissonneuse à canne', 'remorque']
     },
     coton : {
         rendement : 750,
-        machines : ['tracteur', 'semeuse', 'moisonneuse à coton', 'remorque semi']
+        machines : ['tracteur', 'semeuse', 'moissonneuse à coton', 'remorque semi']
     },
     olive: {
         rendement: 1500,
@@ -33,11 +33,12 @@ const cultures = {
     },
     orge : {
         rendement : 1000,
-        machines: ['tracteur', 'semeuse', 'moisonneuse', 'remorque']
+        machines: ['tracteur', 'semeuse', 'moissonneuse', 'remorque']
     },
     soja : {
         rendement : 1000,
-        machines: ['tracteur', 'semeuse', 'moisonneuse', 'remorque']
+        machines: ['tracteur', 'semeuse', 'moissonneuse', 'remorque']
     }
 
 }
+module.exports = cultures;

@@ -8,7 +8,7 @@ class Machine {
 
     utiliser(){
         if(this.utilise){
-            console.log(`La machine ${this.type} numero ${this.numero} est déjà utilisée`);
+            console.log(`[${new Date().toISOString()}]La machine ${this.type} numero ${this.numero} est déjà utilisée`);
             return false
         }
         this.utilise = true;
@@ -16,7 +16,7 @@ class Machine {
     }
     liberer() {
         this.utilise = false;
-        console.log(` Machine ${this.type} ${this.numero} est libérée.`);
+        console.log(` [${new Date().toISOString()}]Machine ${this.type} ${this.numero} est libérée.`);
     }
     estDisponible() {
         return !this.utilise;

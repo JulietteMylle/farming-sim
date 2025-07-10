@@ -11,7 +11,7 @@ const pool = mysql.createPool({
 
 class Stockage {
     async getCapaciteUtilisee() {
-        const [rows] = await createPool.query('SELECT SUM(quantite) AS total FROM stockage');
+        const [rows] = await pool.query('SELECT SUM(quantite) AS total FROM stockage');
         return rows[0].total || 0;
     }
     async getEspaceDisponible() {
@@ -21,7 +21,7 @@ class Stockage {
     async ajouter (type, quantite) {
         const espace = await this.getEspaceDisponible();
         if (espace < quantite) {
-            console.log(`Stockage plein. ${quantite}L de ${type} refusés.`);
+            console.log(`[${new Date().toISOString()}]Stockage plein. ${quantite}L de ${type} refusés.`);
             return false
         }
          const [rows] = await pool.query('SELECT * FROM stockage WHERE type = ?', [type]);
@@ -30,19 +30,19 @@ class Stockage {
         } else {
             await pool.query('INSERT INTO stockage (type, quantite) VALUES (?, ?)', [type, quantite]);
         }
-        console.log(`Ajouté : ${quantite}L de ${type}`);
+        console.log(`[${new Date().toISOString()}]Ajouté : ${quantite}L de ${type}`);
         return true;
     }
     async retirer(type, quantite){
         const[rows] = await pool.query('SELECT quantite FROM stockage WHERE type = ?', [type]);
         if (rows.length === 0 || rows[0].quantite < quantite) {
-            console.log(`Stock insuffisant pour retirer ${quantite}L de ${type}`);
+            console.log(`[${new Date().toISOString()}]Stock insuffisant pour retirer ${quantite}L de ${type}`);
             return false;
         }
          await pool.query('UPDATE stockage SET quantite = quantite - ? WHERE type = ?', [quantite, type]);
         await pool.query('DELETE FROM stockage WHERE quantite = 0');
 
-        console.log(`Retiré : ${quantite}L de ${type}`);
+        console.log(`[${new Date().toISOString()}]Retiré : ${quantite}L de ${type}`);
         return true;
     }
 
