@@ -42,8 +42,23 @@ class AgricultureManager {
         console.log(`[${new Date().toISOString()}]Récolte de ${cultureName} sur champ ${champ.numero}`);
         const result = champ.recolterPlant();
 
-        await stockage.ajouter(result.culture, result.rendement);
-        console.log(`[${new Date().toISOString()}]Ajout de ${result.rendement}L de ${result.culture} au stockage`);
+        let ajoutReussi = await stockage.ajouter(result.culture, result.rendement);
+        
+
+        if(!ajoutReussi){
+            console.log(`[${new Date().toISOString()}]Stockage plein. Nouvelle tentative dans 1 minute...`);
+            await new Promise(resolve => setTimeout(resolve, 60_000)); 
+
+            ajoutReussi = await stockage.ajouter(result.culture, result.rendement);
+
+            if (!ajoutReussi) {
+                console.log(`[${new Date().toISOString()}]Production perdue : ${result.rendement}L de ${result.culture}`);
+            } else {
+                console.log(`[${new Date().toISOString()}]Ajout réussi après 1 minute : ${result.rendement}L de ${result.culture}`);
+            }
+        }else {
+            console.log(`[${new Date().toISOString()}]Ajout de ${result.rendement}L de ${result.culture} au stockage`);
+        }
 
         MachineManager.libererMachine(moissonneuse);
 
