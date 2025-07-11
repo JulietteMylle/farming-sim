@@ -107,7 +107,7 @@ class SimulationManager {
                 if (usine.estDisponible()) {
                     usine.utiliser();
                     await usine.produire(stockage);
-                    UsineManager.LibererUsine(usine);
+                    UsineManager.libererUsine(usine);
                 }
             }
         }, 1000);

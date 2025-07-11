@@ -1,6 +1,6 @@
 const pool = require('../db');
 
-const max = 10000000;
+const max = 100000;
 
 class Stockage {
     async getCapaciteUtilisee() {
