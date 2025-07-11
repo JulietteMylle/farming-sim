@@ -12,9 +12,20 @@ class AgricultureManager {
     }
 
     static async semerChamp(champ, nomCulture) {
-        console.log(`[${new Date().toISOString()}] Culture demandée pour semer: ${nomCulture}`);
+        console.log(`[${new Date().toISOString()}]Culture demandée pour semer: ${nomCulture}`);
         const culture = cultures[nomCulture];
-        const machineName = culture.machines.find(m => m.includes('semeuse') || m.includes('planteuse'));
+
+        if (!culture) {
+            console.warn(`[${new Date().toISOString()}]⚠️ Culture "${nomCulture}" inconnue.`);
+            return;
+        }
+
+        const machineName = culture.machines.find(m => m.toLowerCase().includes('semeuse') || m.toLowerCase().includes('planteuse'));
+        if (!machineName) {
+            console.warn(`[${new Date().toISOString()}]⚠️ Aucune machine de semis trouvée pour "${nomCulture}".`);
+            return;
+        }
+
         const machine = await MachineManager.demanderMachine(machineName);
         console.log(`[${new Date().toISOString()}]Semis de ${nomCulture} sur champ ${champ.numero}...`);
         await new Promise(resolve => setTimeout(resolve, 30000));
@@ -34,21 +45,34 @@ class AgricultureManager {
         const cultureName = champ.culture;
         const culture = cultures[cultureName];
 
-        const moissonneuseName = culture.machines.find(m => m.includes('moissonneuse'));
+        if (!culture) {
+            console.warn(`[${new Date().toISOString()}]⚠️ Culture "${cultureName}" inconnue.`);
+            return;
+        }
+
+        const moissonneuseName = culture.machines.find(m => m.toLowerCase().includes('moissonneuse'));
+        if (!moissonneuseName) {
+            console.warn(`[${new Date().toISOString()}]⚠️ Aucune moissonneuse trouvée pour "${cultureName}".`);
+            return;
+        }
+
         const moissonneuse = await MachineManager.demanderMachine(moissonneuseName);
+        const remorqueName = culture.machines.find(m => m.toLowerCase().includes('remorque'));
 
-        const remorqueName = culture.machines.find(m => m.includes('remorque'));
-
-        console.log(`[${new Date().toISOString()}]Récolte de ${cultureName} sur champ ${champ.numero}`);
+        console.log(`[${new Date().toISOString()}]Récolte de ${cultureName} sur champ ${champ.numero}...`);
         const result = champ.recolterPlant();
 
+        if (!result) {
+            console.warn(`[${new Date().toISOString()}]⚠️ Échec de la récolte : aucun résultat pour champ ${champ.numero}.`);
+            MachineManager.libererMachine(moissonneuse);
+            return;
+        }
+
         let ajoutReussi = await stockage.ajouter(result.culture, result.rendement);
-        
 
-        if(!ajoutReussi){
+        if (!ajoutReussi) {
             console.log(`[${new Date().toISOString()}]Stockage plein. Nouvelle tentative dans 1 minute...`);
-            await new Promise(resolve => setTimeout(resolve, 60_000)); 
-
+            await new Promise(resolve => setTimeout(resolve, 60000));
             ajoutReussi = await stockage.ajouter(result.culture, result.rendement);
 
             if (!ajoutReussi) {
@@ -56,7 +80,7 @@ class AgricultureManager {
             } else {
                 console.log(`[${new Date().toISOString()}]Ajout réussi après 1 minute : ${result.rendement}L de ${result.culture}`);
             }
-        }else {
+        } else {
             console.log(`[${new Date().toISOString()}]Ajout de ${result.rendement}L de ${result.culture} au stockage`);
         }
 

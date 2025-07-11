@@ -38,6 +38,14 @@ const cultures = {
     soja : {
         rendement : 1000,
         machines: ['tracteur', 'semeuse', 'moissonneuse', 'remorque']
+    },
+    herbe : {
+        rendement : 5000,
+        machines : ['tracteur', 'semeuse', 'moissonneuse']
+    },
+    cacao : {
+        rendement : 1000,
+        machines : ['planteuse à arbre', 'moissonneuse à arbre']
     }
 
 }
