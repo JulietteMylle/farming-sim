@@ -20,10 +20,11 @@ class UsineManager {
         this.ajouterUsine('Filature', 'tissu', 'coton', 2, false);
         this.ajouterUsine('Atelier de couture', 'vêtements', 'tissu', 2, true);
         this.ajouterUsine('Cave à vin', 'vin', 'raisin', 2, true);
+        this.ajouterUsine('Usine de fumier', 'fertilisant', 'fumier', 1, false);
     }
     ajouterUsine(nom, resultat, besoin, multiplicateur, vendreEnOr) {
-        const usine = new Usine(nom, this.listeUsine.length + 1, resultat, besoin, multiplicateur);
-        usine.vendreEnOr = vendreEnOr;
+        const usine = new Usine(nom, this.listeUsine.length + 1, resultat, besoin, multiplicateur, vendreEnOr);
+
         this.listeUsine.push(usine);
     }
     demanderUsine(nom) {

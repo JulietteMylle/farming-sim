@@ -27,14 +27,22 @@ class SimulationManager {
             this.serres.push(new Serre(i));
         }
 
-        this.lancerSimulation();
-        this.surveillerChamp();
-        this.usineProduire();
-        this.gererSerresCycle();
-
-        this.essayerAjouterAnimaux();
-
-        this.produireAnimaux();
+        this.initialiserOr().then(() => {
+            this.lancerSimulation();
+            this.surveillerChamp();
+            this.usineProduire();
+            this.gererSerresCycle();
+            this.essayerAjouterAnimaux();
+            this.produireAnimaux();
+        });
+    }
+    async initialiserOr() {
+        const orActuel = await stockage.getQuantite('or');
+        if (orActuel < 100) {
+            const aAjouter = 100 - orActuel;
+            await stockage.ajouter('or', aAjouter);
+            console.log(`[Simulation] Initialisation : ajout de ${aAjouter} unités d'or au stockage.`);
+        }
     }
 
     async essayerAjouterAnimaux() {

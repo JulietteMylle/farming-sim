@@ -33,11 +33,13 @@ class Champ {
         this.rendement *= 1.5;
         this.rendement = Math.round(this.rendement);
         console.log(`[${new Date().toISOString()}]Le champ numéro ${this.numero} a été fertilisé`);
+        return true;
     } else if (this.estMature) {
         console.log(`[${new Date().toISOString()}]Trop tard ! La culture sur le champ ${this.numero} est déjà mature. Fertilisation impossible.`);
     } else {
         console.log(`[${new Date().toISOString()}]Le champ ${this.numero} ne peut pas être fertilisé dans son état actuel : ${this.etat}`);
     }
+    return false;
 }
     recolterPlant() {
         if (this.etat === "prêt à récolter"){

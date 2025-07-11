@@ -16,13 +16,13 @@ class AgricultureManager {
         const culture = cultures[nomCulture];
 
         if (!culture) {
-            console.warn(`[${new Date().toISOString()}]⚠️ Culture "${nomCulture}" inconnue.`);
+            console.warn(`[${new Date().toISOString()}] Culture "${nomCulture}" inconnue.`);
             return;
         }
 
         const machineName = culture.machines.find(m => m.toLowerCase().includes('semeuse') || m.toLowerCase().includes('planteuse'));
         if (!machineName) {
-            console.warn(`[${new Date().toISOString()}]⚠️ Aucune machine de semis trouvée pour "${nomCulture}".`);
+            console.warn(`[${new Date().toISOString()}] Aucune machine de semis trouvée pour "${nomCulture}".`);
             return;
         }
 
@@ -34,25 +34,43 @@ class AgricultureManager {
     }
 
     static async fertiliserChamp(champ) {
-        const machine = await MachineManager.demanderMachine('fertilisateur');
-        console.log(`[${new Date().toISOString()}]Fertilisation du champ ${champ.numero}`);
-        await new Promise(resolve => setTimeout(resolve, 30000));
-        champ.addFertilisant();
-        MachineManager.libererMachine(machine);
+    const fertilQuantite = await stockage.getQuantite('fertilisant');
+
+    if (fertilQuantite <= 0) {
+        console.log(`[${new Date().toISOString()}] Pas de fertilisant disponible pour le champ ${champ.numero}`);
+        return;
     }
+
+    const machine = await MachineManager.demanderMachine('fertilisateur');
+    console.log(`[${new Date().toISOString()}]Fertilisation du champ ${champ.numero}...`);
+    await new Promise(resolve => setTimeout(resolve, 30000));
+
+    const result = champ.addFertilisant(); // booléen si fertilisation effective
+
+    if (result) {
+        const retrait = await stockage.retirer('fertilisant', 1);
+        if (!retrait) {
+            console.warn(`[${new Date().toISOString()}] Échec retrait fertilisant après fertilisation du champ ${champ.numero}`);
+        } else {
+            console.log(`[${new Date().toISOString()}] 1 unité de fertilisant utilisée pour le champ ${champ.numero}`);
+        }
+    }
+
+    MachineManager.libererMachine(machine);
+}
 
     static async recolterChamp(champ) {
         const cultureName = champ.culture;
         const culture = cultures[cultureName];
 
         if (!culture) {
-            console.warn(`[${new Date().toISOString()}]⚠️ Culture "${cultureName}" inconnue.`);
+            console.warn(`[${new Date().toISOString()}] Culture "${cultureName}" inconnue.`);
             return;
         }
 
         const moissonneuseName = culture.machines.find(m => m.toLowerCase().includes('moissonneuse'));
         if (!moissonneuseName) {
-            console.warn(`[${new Date().toISOString()}]⚠️ Aucune moissonneuse trouvée pour "${cultureName}".`);
+            console.warn(`[${new Date().toISOString()}] Aucune moissonneuse trouvée pour "${cultureName}".`);
             return;
         }
 
@@ -63,7 +81,7 @@ class AgricultureManager {
         const result = champ.recolterPlant();
 
         if (!result) {
-            console.warn(`[${new Date().toISOString()}]⚠️ Échec de la récolte : aucun résultat pour champ ${champ.numero}.`);
+            console.warn(`[${new Date().toISOString()}] Échec de la récolte : aucun résultat pour champ ${champ.numero}.`);
             MachineManager.libererMachine(moissonneuse);
             return;
         }

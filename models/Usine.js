@@ -1,5 +1,7 @@
+const entrepot = require('./Entrepôt');
+
 class Usine {
-    constructor(nom, numero, resultat, besoin, multiplicateur, vendre = false){
+    constructor(nom, numero, resultat, besoin, multiplicateur, vendre) {
         this.nom = nom;
         this.numero = numero;
         this.resultat = resultat;
@@ -9,22 +11,24 @@ class Usine {
         this.utilise = false;
         this.capaciteParSeconde = 100;
     }
-    utiliser(){
-        if(this.utilise){
-            console.log(`[${new Date().toISOString()}]L'usine ${nom} est déjà utilisée`);
-            return false
+
+    utiliser() {
+        if (this.utilise) {
+            console.log(`[${new Date().toISOString()}]L'usine ${this.nom} est déjà utilisée`);
+            return false;
         }
         this.utilise = true;
-        return true
+        return true;
     }
+
     liberer() {
         this.utilise = false;
+    }
 
-        
+    estDisponible() {
+        return !this.utilise;
     }
-    estDisponible(){
-        return !this.utilise
-    }
+
     async produire(stockage) {
         const quantite = this.capaciteParSeconde;
 
@@ -35,24 +39,26 @@ class Usine {
         }
 
         const produitFinal = quantite * this.multiplicateur;
-        const dispo = await stockage.getEspaceDisponible();
 
-        if (this.vendreEnOr) {
+        if (this.vendre) {
             await stockage.retirer(this.besoin, quantite);
             await stockage.ajouter('or', produitFinal);
             console.log(`[${new Date().toISOString()}]Usine ${this.nom} a vendu ${produitFinal}L de ${this.besoin} et gagné ${produitFinal} or`);
             return;
         }
 
-        if (dispo < produitFinal) {
-            console.log(`[${new Date().toISOString()}]Stockage plein. L'usine ${this.nom} est mise en pause.`);
+        const dispoEntrepot = await entrepot.getEspaceDisponible();
+        if (dispoEntrepot < produitFinal) {
+            console.log(`[${new Date().toISOString()}]Entrepôt plein. L'usine ${this.nom} est mise en pause.`);
             return;
         }
+
         await stockage.retirer(this.besoin, quantite);
         await new Promise(resolve => setTimeout(resolve, 1000));
-        await stockage.ajouter(this.resultat, produitFinal);
-        console.log(`[${new Date().toISOString()}]Usine ${this.nom} a transformé ${quantite}L de ${this.besoin} en ${produitFinal}L de ${this.resultat}`);
+        await entrepot.ajouter(this.resultat, produitFinal);
+
+        console.log(`[${new Date().toISOString()}]Usine ${this.nom} a transformé ${quantite}L de ${this.besoin} en ${produitFinal}L de ${this.resultat} (stocké dans l'entrepôt)`);
     }
 }
 
-module.exports = Usine
+module.exports = Usine;
